@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" th:href="@{/static/css/minireset.css}"  />
+    <link rel="stylesheet" th:href="@{/static/css/common.css}" />
+    <link rel="stylesheet" th:href="@{/static/css/iconfont.css}" />
+    <link rel="stylesheet" th:href="@{/static/css/bookManger.css}" />
+
+    <script language="JavaScript" th:src="@{/static/script/vue.js}"></script>
+    <script language="JavaScript" th:src="@{/static/script/axios.min.js}"></script>
+    <script language="JavaScript" th:src="@{/static/script/book_manager.js}"></script>
+  </head>
+  <body>
+    <div class="header">
+      <div class="w">
+        <div class="header-left">
+          <a th:href="@{/index.html}">
+            <img th:src="@{/static/img/logo.png}" alt=""
+          /></a>
+          <h1>Book Management System</h1>
+        </div>
+        <div class="header-right">
+          <a th:href="@{/page.do(operate='page',page='manager/book_manager')}" class="order">Book</a>
+          <a th:href="@{/page.do(operate='page',page='manager/order_manager')}" class="destory">Order</a>
+          <a th:href="@{/page.do(operate='page',page='index')}" class="gohome">Return</a>
+        </div>
+      </div>
+    </div>
+    <div class="list" id="book_manager_div">
+      <div class="w">
+        <div class="add">
+          <a th:href="@{/page.do(operate='page',page='manager/book_edit')}">Add new book</a>
+        </div>
+        <div class="header-search">
+          Search Book by keyword:
+          <input id="input1" type="text" placeholder="Type Your Keyword"/>
+          <button class="iconfont icon-search" @click="searchBook"></button>
+<!--          <a @click="searchBook()">delete</a>-->
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>id</th>
+              <th>Img</th>
+              <th>Name</th>
+              <th>Price</th>
+              <th>Author</th>
+              <th>Amount</th>
+              <th>Inventory</th>
+              <th>status</th>
+              <th>Operation</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="book in bookList">
+              <td>{{book.id}}</td>
+              <td>
+                <img v-bind:src="'static/uploads/'+book.bookImg" alt="" />
+              </td>
+              <td>{{book.bookName}}</td>
+              <td>{{book.price}}</td>
+              <td>{{book.author}}</td>
+              <td>{{book.saleCount}}</td>
+              <td>{{book.bookCount}}</td>
+              <td>{{book.bookStatus}}</td>
+              <td>
+                <a @click="bookModify(book.id)">Modify</a>
+              </td>
+<!--              <td><a @click="deleteBook(book.id)">delete</a></td>-->
+              <!--<a @click="deleteCart(cartItem.id)">delete删除</a>-->
+            </tr>
+          </tbody>
+        </table>
+        <div class="footer">
+          <div class="footer-right">
+            <div>First</div>
+            <div>Page Up</div>
+            <ul>
+              <li class="active">1</li>
+              <li>2</li>
+              <li>3</li>
+            </ul>
+            <div>Page Down</div>
+            <div>End</div>
+            <span th:text="*{session.pageCount}"></span><span>pages</span>
+            <span th:text="*{session.bookCount}"></span><span>orders</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="bottom">
+    </div>
+  </body>
+</html>

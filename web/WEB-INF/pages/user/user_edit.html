@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" >
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" th:href="@{/static/css/minireset.css}" />
+    <link rel="stylesheet" th:href="@{/static/css/common.css}" />
+    <link rel="stylesheet" th:href="@{/static/css/book_edit.css}" />
+
+    <script language="JavaScript" th:src="@{/static/script/vue.js}"></script>
+    <script language="JavaScript" th:src="@{/static/script/axios.min.js}"></script>
+    <script language="JavaScript" th:src="@{/static/script/user_edit.js}"></script>
+  </head>
+  <body>
+    <div class="header">
+      <div class="w">
+        <div class="header-left">
+          <a th:href="@{/index.html}">
+            <img th:src="@{/static/img/logo.png}" alt=""
+          /></a>
+          <h1>edit your information</h1>
+        </div>
+        <div class="header-right">
+          <a th:href="@{/page.do(operate='page',page='index')}" class="gohome">return to bookstore</a>
+        </div>
+      </div>
+    </div>
+    <div class="login_banner">
+      <div class="register_form">
+        <form action="user.do" method="post">
+          <input type="hidden" name="operate" value="modifyUser"/>
+          <input type="hidden" name="userId" id="idInput"/>
+          <div class="form-item">
+            <div>
+              <label>Your Name:</label>
+              <input type="text" name="uname" placeholder="please input name" />
+            </div>
+          </div>
+          <div class="form-item">
+            <div>
+              <label>Password:</label>
+              <input type="number" name="pwd" placeholder="please input password" />
+            </div>
+          </div>
+<!--          <div class="form-item">-->
+<!--            <div>-->
+<!--              <label>Confirm Password:</label>-->
+<!--              <input type="number" name="pwd" placeholder="please input password" />-->
+<!--            </div>-->
+<!--          </div>-->
+          <div class="form-item">
+            <div>
+              <label>Email:</label>
+              <input type="text" name="email" placeholder="please input email" />
+            </div>
+          </div>
+          <button class="btn">Submit</button>
+        </form>
+      </div>
+    </div>
+    <div class="bottom">
+    </div>
+  </body>
+</html>

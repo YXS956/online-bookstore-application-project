@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" >
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" th:href="@{/static/css/minireset.css}" />
+    <link rel="stylesheet" th:href="@{/static/css/common.css}" />
+    <link rel="stylesheet" th:href="@{/static/css/book_edit.css}" />
+
+    <script language="JavaScript" th:src="@{/static/script/vue.js}"></script>
+    <script language="JavaScript" th:src="@{/static/script/axios.min.js}"></script>
+    <script language="JavaScript" th:src="@{/static/script/book_edit.js}"></script>
+  </head>
+  <body>
+    <div class="header">
+      <div class="w">
+        <div class="header-left">
+          <a th:href="@{/index.html}">
+            <img th:src="@{/static/img/logo.png}" alt=""
+          /></a>
+          <h1 id="show1">add book</h1>
+        </div>
+        <div class="header-right">
+          <a th:href="@{/page.do(operate='page',page='manager/book_manager')}" class="order">Book</a>
+          <a th:href="@{/page.do(operate='page',page='manager/order_manager')}" class="destory">Order</a>
+          <a th:href="@{/page.do(operate='page',page='index')}" class="gohome">Return</a>
+        </div>
+      </div>
+    </div>
+    <div class="login_banner">
+      <div class="register_form">
+        <form action="book.do" method="post">
+          <input type="hidden" name="operate" value="modifyBook"/>
+          <input type="hidden" name="bookId" id="idInput"/>
+          <div class="form-item">
+            <div>
+              <label>Name:</label>
+              <input type="text" name="bookName" placeholder="Please input name" />
+            </div>
+          </div>
+          <div class="form-item">
+            <div>
+              <label>Price of pbook:</label>
+              <input type="number" name="price" placeholder="Please input price of paper book" />
+            </div>
+          </div>
+          <div class="form-item">
+            <div>
+              <label>Price of ebook:</label>
+              <input type="number" name="eprice" placeholder="Please input price of ebook" />
+            </div>
+          </div>
+          <div class="form-item">
+            <div>
+              <label>Discount price of pbook:</label>
+              <input type="number" name="paperdisPrice" placeholder="Please input price after discount of paper book" />
+            </div>
+          </div>
+          <div class="form-item">
+            <div>
+              <label>Discount price of ebook:</label>
+              <input type="number" name="edisPrice" placeholder="Please input price after discount of ebook" />
+            </div>
+          </div>
+          <div class="form-item">
+            <div>
+              <label>Author:</label>
+              <input type="text" name="author" placeholder="Please input author" />
+            </div>
+          </div>
+          <div class="form-item">
+            <div>
+              <label>Sales Amount:</label>
+              <input type="number" name="saleCount" placeholder="Please input sales" />
+            </div>
+          </div>
+          <div class="form-item">
+            <div>
+              <label>Inventory:</label>
+              <input type="number" name="bookCount" placeholder="Please input quantity of inventory" />
+            </div>
+          </div>
+          <div class="form-item">
+            <div>
+              <label>Status:</label>
+              <input type="radio" name="bookStatus" value="0" />available
+              <input type="radio" name="bookStatus" value="1" />unavailable
+            </div>
+          </div>
+          <div class="form-item">
+            <div>
+              <label>Description:</label>
+              <input type="text" name="description" placeholder="Please input description" />
+            </div>
+          </div>
+          <div class="form-item">
+            <div>
+              <label>Category:</label>
+              <select name="category">
+                <option value="" selected>select</option>
+                <option value="Art&Photography">Art&Photography</option>
+                <option value="Business,Finance&Law">Business,Finance&Law</option>
+                <option value="Computing&Programming">Computing&Programming</option>
+                <option value="Fiction">Fiction</option>
+                <option value="Health">Health</option>
+                <option value="Technology&Engineering">Technology&Engineering</option>
+                <option value="History&Archaeology">History&Archaeology</option>
+                <option value="Bestselling">Bestselling</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-item">
+            <div>
+              <label>Format:</label>
+              <input type="text" name="format" placeholder="Please input format" />
+            </div>
+          </div>
+          <div class="form-item">
+            <div>
+              <label>Language:</label>
+              <select name="language">
+                <option value="" selected>select</option>
+                <option value="English">English</option>
+                <option value="German">German</option>
+                <option value="French">French</option>
+                <option value="Spanish">Spanish</option>
+                <option value="Polish">Polish</option>
+                <option value="Italian">Italian</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-item">
+            <div>
+              <label>Dimensions:</label>
+              <input type="text" name="dimensions" placeholder="Please input dimension" />
+            </div>
+          </div>
+          <div class="form-item">
+            <div>
+              <label>State of editon:</label>
+              <input type="text" name="editStat" placeholder="Please input state of edition" />
+            </div>
+          </div>
+          <div class="form-item">
+            <div>
+              <label>PublicDate:</label>
+              <input type="date" name="publicDate" placeholder="Please input public release date" />
+            </div>
+          </div>
+          <div class="form-item">
+            <div>
+              <label>ISBN:</label>
+              <input type="text" name="ISBN" placeholder="Please input ISBN" />
+            </div>
+          </div>
+          <div class="form-item">
+            <div>
+              <label>Publisher:</label>
+              <input type="text" name="publisher" placeholder="Please input publisher" />
+            </div>
+          </div>
+          <div class="form-item">
+            <div>
+              <label>PublicCiCon:</label>
+              <input type="text" name="publicCiCon" placeholder="Please input city and country of publisher" />
+            </div>
+          </div>
+          <button class="btn">Submit</button>
+        </form>
+      </div>
+    </div>
+    <div class="bottom">
+    </div>
+  </body>
+</html>

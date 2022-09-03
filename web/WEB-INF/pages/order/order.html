@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:v-bind="http://www.w3.org/1999/xhtml"
+      xmlns:v-on="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My order</title>
+    <link rel="stylesheet" th:href="@{/static/css/minireset.css}" />
+    <link rel="stylesheet" th:href="@{/static/css/common.css}" />
+    <link rel="stylesheet" th:href="@{/static/css/cart.css}" />
+
+    <link rel="stylesheet" th:href="@{/static/css/orderManger.css}" />
+
+    <script language="JavaScript" th:src="@{/static/script/vue.js}"></script>
+    <script language="JavaScript" th:src="@{/static/script/axios.min.js}"></script>
+    <script language="JavaScript" th:src="@{/static/script/order_manager.js}"></script>
+    <script>
+      function refresh(){
+        // sessionStorage.setItem("refresh","Y");
+        window.location.href='book.do?ope=refre&keyWord=';
+        window.location.href='book.do';
+      }
+    </script>
+  </head>
+  <body>
+    <div class="header">
+      <div class="w">
+        <div class="header-left">
+          <a href="javascript:void(0)" onclick="refresh()">
+            <img th:src="@{/static/img/logo.png}" alt=""/></a>
+          <h1>My order</h1>
+        </div>
+        <div class="header-right">
+          <a th:href="@{/page.do(operate='page',page='user/user_edit',id=${session.currUser.getId()})}" class="register">Edit</a>
+          <h3>Welcome<span th:text="${session.currUser.uname}">Lina</span> to Bookstore</h3>
+          <div class="order"><a th:href="@{/order.do(operate='getOrderList')}">My Order<!--我的订单1--></a></div>
+          <div class="destory"><a th:href="@{/page.do(operate='page',page='user/login')}">Log out<!--注销--></a></div>
+          <div class="gohome">
+            <a href="book.do">Back<!--返回--></a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="list" id="order_manager_div">
+      <div class="w">
+        <table id="tbl_order">
+          <thead>
+            <tr>
+              <th>id<!--订单号--></th>
+              <th>date<!--订单日期--></th>
+              <th>amount<!--订单金额--></th>
+              <th>number<!--订单数量--></th>
+              <th>state<!--订单状态--></th>
+              <th>detail<!--订单详情--></th>
+              <th style="visibility:hidden">No</th>
+            </tr>
+          </thead>
+          <tbody th:each="orderBean,orderBeanStat : ${session.currUser.orderList}" th:object="${orderBean}">
+            <tr>
+              <td th:text="*{orderNo}">12354456895</td>
+              <td th:text="*{orderDate}">
+                2015.04.23
+              </td>
+              <td th:text="*{orderMoney}">90.00</td>
+              <td th:text="*{totalBookCount}">88</td>
+              <td><a href="" class="send">Wait for sent</a></td>
+              <td>
+                <button @click="showDetail($event)">Check Detail</button>
+              </td>
+              <td style="visibility:hidden"></td>
+<!--              <details>-->
+<!--                <summary>Check detail</summary>-->
+<!--              </details>-->
+            </tr>
+            <tr th:id="'show'+${(orderBeanStat.index+1)*2}" style="display:none">
+              <td colspan="6" style="text-align: center;">
+                <table>
+                  <thead></thead>
+                  <tbody >
+                  <tr v-for="orderItem in orderItemList">
+                    <td>
+                      <img v-bind:src="'static/uploads/'+orderItem.book.bookImg" alt="" />
+                    </td>
+                    <td>{{orderItem.book.bookName}}</td>
+                    <td>{{orderItem.buyCount}}</td>
+                  </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="footer">
+          <div class="footer-right">
+            <div>First</div>
+            <div>Page UP</div>
+            <ul>
+              <li class="active">1</li>
+              <li>2</li>
+              <li>3</li>
+            </ul>
+            <div>Page Down</div>
+            <div>End</div>
+            <span>10 Pages</span>
+            <span>30 records</span>
+            <span>to</span>
+            <input type="text">
+            <span>page</span>
+            <button>go</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="bottom">
+      <div class="w">
+        <div class="top">
+          <ul>
+            <li>
+              <a href="">
+                <img src="./static/img/bottom1.png" alt="">
+                <span>About US</span>
+              </a>
+            </li>
+            <li>
+              <a href="">
+                <img src="./static/img/bottom.png" alt="">
+                <span>Sitemap</span>
+              </a>
+            </li>
+            <li>
+              <a href="">
+                <img src="./static/img/bottom2.png" alt="">
+                <span>Bookmarks</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div class="content">
+          <dl>
+            <dt>Facebook</dt>
+            <dd>Follow us</dd>
+          </dl>
+          <dl>
+            <dt>Twitter</dt>
+            <dd>Follow us</dd>
+          </dl>
+          <dl>
+            <dt>Pinterest</dt>
+            <dd>Follow us</dd>
+          </dl>
+          <dl>
+            <dt>instagram</dt>
+            <dd>Follow us<dd>
+          </dl>
+        </div>
+      </div>
+      <div class="down">
+        Developed by Yuqi
+      </div>
+    </div>
+  </body>
+</html>

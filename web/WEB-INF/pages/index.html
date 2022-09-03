@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:v-bind="http://www.w3.org/1999/xhtml"
+      xmlns:v-th="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Online bookstore</title>
+    <link rel="stylesheet" th:href="@{/static/css/minireset.css}" />
+    <link rel="stylesheet" th:href="@{/static/css/common.css}" />
+    <link rel="stylesheet" th:href="@{/static/css/iconfont.css}" />
+    <link rel="stylesheet" th:href="@{/static/css/index.css}" />
+    <link rel="stylesheet" th:href="@{/static/css/swiper.min.css}" />
+
+    <script language="JavaScript" th:src="@{/static/script/vue.js}"></script>
+    <script language="JavaScript" th:src="@{/static/script/axios.min.js}"></script>
+    <script language="JavaScript" th:src="@{/static/script/index.js}"></script>
+    <script>
+      function refresh(){
+        // sessionStorage.setItem("refresh","Y");
+        window.location.href='book.do?ope=refre';
+        // window.location.href='book.do';
+      }
+      window.setInterval("getRTime()",1000);
+      function getRTime(){
+
+        var EndTime= new Date('2022/09/03 21:10:19');
+
+        var NowTime = new Date();
+
+        var t =EndTime.getTime() - NowTime.getTime();
+
+        // var d=Math.floor(t/1000/60/60/24);
+
+        var h=Math.floor(t/1000/60/60%24);
+
+        var m=Math.floor(t/1000/60%60);
+
+        var s=Math.floor(t/1000%60);
+
+        // document.getElementById("t_d").innerHTML = d + "";
+        pad(h);
+        pad(m);
+        pad(s);
+
+        document.getElementById("t_h").innerText = h.toString();
+
+        document.getElementById("t_m").innerText = m.toString();
+
+        document.getElementById("t_s").innerText = s.toString();
+      }
+      function pad(num) {
+        var len = num.toString().length;
+        while(len < 2) {
+          num = "0" + num.toString();
+          len++;
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div id="app">
+      <div class="topbar">
+        <div class="w">
+          <div class="topbar-left">
+            <i>Contact us</i>
+            <i><Help></Help></i>
+            <i class="iconfont icon-ai-arrow-down"></i>
+          </div>
+          <div class="topbar-right" th:if="${session.currUser==null}">
+            <a th:href="@{/page.do(operate='page',page='user/login')}" class="login">Login</a>
+            <a th:href="@{/page.do(operate='page',page='user/regist')}" class="register">Regist</a>
+            <a th:href="@{/page.do(operate='page',page='user/login')}" class="cart iconfont icon-gouwuche">
+              Cart
+            </a>
+          </div>
+          <div class="topbar-right" th:unless="${session.currUser==null}">
+            <!--After Login登录后界面-->
+            <a th:href="@{/page.do(operate='page',page='user/user_edit',id=${session.currUser.getId()})}" class="register">Edit</a>
+            <span>Welcome,<b th:text="${session.currUser.getUname()}">Lina</b></span>
+            <a th:href="@{/page.do(operate='page',page='user/login')}" class="register">Sign-Out</a>
+            <a th:href="@{/page.do(operate='page',page='cart/cart')}" class="cart iconfont icon-gouwuche">
+              Cart
+              <div class="cart-num" th:text="${session.currUser.cart.totalCount}"></div><!--右上角小图标-->
+            </a>
+            <div th:if="${session.currUser.getRole()==1}">
+              <a th:href="@{/page.do(operate='page',page='manager/manager')}"  class="admin">Background management</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="header w">
+        <a href="javascript:void(0)" onclick="refresh()" class="header-logo"></a>
+        <div class="header-nav">
+          <ul>
+            <li><a href="javascript:void(0)" onclick="refresh()" >Books are a uniquely portable magic. ——Stephen King</a></li>
+          </ul>
+        </div>
+        <!--Keyowrd Search关键字搜索功能-->
+        <div class="header-search">
+          Search
+          <input id="input1" type="text" th:value="${session.keyWord}"/>
+          <button class="iconfont icon-search" th:onclick="searchKey()" > </button>
+        </div>
+      </div>
+      <div class="banner w clearfix">
+        <div class="banner-left">
+          <ul>
+            <li>
+              <a th:href="@{/book.do(ope='keySearch',keyWord='Art&Photography')}">
+                <span>Art&Photography</span>
+                <i class="iconfont icon-jiantou"></i></a>
+            </li>
+            <li>
+              <a th:href="@{/book.do(ope='keySearch',keyWord='Business,Finance&Law')}">
+                <span>Business,Finance&Law</span>
+                <i class="iconfont icon-jiantou"></i></a>
+            </li>
+            <li>
+              <a th:href="@{/book.do(ope='keySearch',keyWord='Computing&Programming')}">
+                <span>Computing&Programming</span>
+                <i class="iconfont icon-jiantou"></i></a>
+            </li>
+            <li>
+              <a th:href="@{/book.do(ope='keySearch',keyWord='Fiction')}">
+                <span>Fiction</span>
+                <i class="iconfont icon-jiantou"></i></a>
+            </li>
+            <li>
+              <a th:href="@{/book.do(ope='keySearch',keyWord='Health')}">
+                <span>Health</span>
+                <i class="iconfont icon-jiantou"></i></a>
+            </li>
+            <li>
+              <a th:href="@{/book.do(ope='keySearch',keyWord='Technology&Engineering')}">
+                <span>Technology&Engineering</span>
+                <i class="iconfont icon-jiantou"></i></a>
+            </li>
+            <li>
+              <a th:href="@{/book.do(ope='keySearch',keyWord='History&Archaeology')}">
+                <span>History&Archaeology</span>
+                <i class="iconfont icon-jiantou"></i></a>
+            </li>
+            <li>
+              <a th:href="@{/book.do(ope='keySearch',keyWord='Bestselling')}">
+                <span style="font-weight:bold;">Bestselling</span>
+                <i class="iconfont icon-jiantou"></i></a>
+            </li>
+          </ul>
+        </div>
+        <div class="banner-right">
+          <div class="swiper-container">
+            <ul class="swiper-wrapper">
+              <li class="swiper-slide">
+                <img src="./static/uploads/banner1.jpg" alt="">
+                <!-- <div class="banner-img"></div> -->
+              </li>
+              <li class="swiper-slide">
+                <img src="./static/uploads/banner2.jpg" alt="">
+                <!-- <div class="banner-img"></div> -->
+              </li>
+              <li class="swiper-slide">
+                <img src="./static/uploads/banner3.jpg" alt="">
+                <!-- <div class="banner-img"></div> -->
+              </li>
+            </ul>
+            <div class="swiper-button-prev"></div>
+
+            <div class="swiper-button-next"></div>
+
+            <!-- Add Pagination -->
+            <div class="swiper-pagination"></div>
+          </div>
+        </div>
+      </div>
+      <div class="books-list ">
+        <div class="w">
+          <div class="list">
+            <div class="list-header">
+              <div class="title">BookLists</div>
+              <div class="price-search">
+                <span>Price:</span>
+                <input type="text" id="min" th:value="${session.minPrice}">
+                <span>￡GBP-</span>
+                <input type="text" id="max" th:value="${session.maxPrice}">
+                <span>￡GBP</span>
+                <button th:onclick="searchPrice()" >Search</button>
+              </div>
+            </div>
+            <div class="list-content"><!--Display book in booklist书籍列表展示-->
+              <div class="list-non">
+                <p th:if="${#lists.isEmpty(session.bookList)}"> Sorry,no results. </p>
+              </div>
+              <div th:unless="${#lists.isEmpty(session.bookList)}" class="list-item" th:each="book : ${session.bookList}" th:object="${book}">
+                <a th:href="@{/comment.do(operate='getComment',bookId=*{id})}" th:onclick="updatehistory(*{id})">
+                <img th:src="@{|/static/uploads/*{bookImg}|}" alt="">
+                <p th:text="|Name:*{bookName}|"></p><!--书名-->
+                <p th:text="|Author:*{author}|"></p><!--作者-->
+                <p th:text="|Price:￡*{price}|"></p><!--价格-->
+                  <p th:if="${book.eprice==null}">no ebook</p>
+                <p th:unless="${book.eprice==null}" th:text="|ebook:￡*{eprice}|"></p><!--电子书价格--></a>
+
+                <!--Sale:*{saleCount}<p th:text="|inventory:*{bookCount}|"></p>库存量-->
+                <p><button th:if="${session.currUser==null}" th:onclick="backLogin()">Add to Cart</button></p>
+                <p><button th:unless="${session.currUser==null}" th:onclick="addCart(*{id})">Add to Cart</button></p>
+              </div>
+            </div>
+            <div class="list-footer"><!--page up/down翻页功能-->
+                <button th:onclick="|pageChange(1)|" th:disabled="${session.pageNo==1}">First</button>
+                <button th:onclick="|pageChange(${session.pageNo-1})|" th:disabled="${session.pageNo==1}">Page UP</button>
+
+                <ul>
+                  <li class="active" th:text="*{session.pageNo}"></li>
+                  <li><a th:text="*{session.pageNo+1}" th:href="@{/book.do(pageNo=${session.pageNo+1})}" ></a></li>
+                  <li><a th:text="*{session.pageNo+2}" th:href="@{/book.do(pageNo=${session.pageNo+2})}" ></a></li>
+                </ul>
+
+                <button th:onclick="|pageChange(${session.pageNo+1})|" th:disabled="${session.pageNo==session.pageCount}">Page Down</button>
+                <button th:onclick="|pageChange(${session.pageCount})|" th:disabled="${session.pageNo==session.pageCount}">End</button>
+                <!--to which page到第几页-->
+                <span th:text="*{session.pageCount}"></span><span>pages</span>
+                <span th:text="*{session.bookCount}"></span><span>books</span>
+                <span>to</span>
+                <input id="input2" type="text"/>
+                <span>page</span>
+                <button class="" th:onclick="|pageJump(${session.pageCount})|">go</button>
+            </div>
+
+            <div class="list-content" id="random_book_div"><!--Display 10 random books 随机的书籍列表展示-->
+              <button @click="getRandomBookList()">try!<!--refresh--></button>
+              <div class="list-item" v-for="book in randomBookList" >
+                <a :href="'comment.do?operate=getComment&bookId='+book.id" @click="updateHistory(book.id)">
+                  <p>
+                    <img v-bind:src="'static/uploads/'+book.bookImg" alt="" />
+                  </p>
+                  <p>Name:{{book.bookName}}</p>
+                  <p>Author:{{book.author}}</p>
+                  <p>Price:￡{{book.price}}</p>
+                <p v-if="book.eprice == null">no ebook</p>
+                <p v-else >Eprice:{{book.eprice}}</p><!--电子书价格-->
+                </a>
+
+<!--                <p><button th:if="${session.currUser==null}" th:onclick="backLogin()">Add to Cart</button></p>-->
+<!--                <p><button th:unless="${session.currUser==null}" th:onclick="|addCart(*{id})|">Add to Cart</button></p>-->
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="cate w">
+        <div class="list">
+          <a th:href="@{/book.do(ope='keySearch',keyWord='English')}" class="list-item">
+            <i class="iconfont icon-GBR"></i>
+            <span>English</span>
+          </a>
+          <a th:href="@{/book.do(ope='keySearch',keyWord='German')}" class="list-item"
+            ><i class="iconfont icon-GER"></i>German
+          </a>
+          <a th:href="@{/book.do(ope='keySearch',keyWord='French')}" class="list-item">
+            <i class="iconfont icon-FRA"></i>French
+          </a>
+          <a th:href="@{/book.do(ope='keySearch',keyWord='Spanish')}" class="list-item"
+            ><i class="iconfont icon-UAE"></i>Spanish
+          </a>
+          <a th:href="@{/book.do(ope='keySearch',keyWord='Polish')}" class="list-item"
+            ><i class="iconfont icon-POI"></i>Polish
+          </a>
+          <a th:href="@{/book.do(ope='keySearch',keyWord='Italian')}" class="list-item"
+            ><i class="iconfont icon-ITA"></i>Italian
+          </a>
+        </div>
+        <a href="" class="img">
+          <img src="./static/uploads/picthegreatgatsby.jpg" alt="" />
+        </a>
+        <a href="" class="img">
+          <img src="./static/uploads/sabbaticalofthemind.jpg" alt="" />
+        </a>
+        <a href="" class="img">
+          <img src="./static/uploads/thedawnlandscatch.jpg" alt="" />
+        </a>
+      </div>
+      <div class="books">
+        <div class="w">
+          <div class="seckill">
+            <div class="seckill-header">
+              <div class="title">
+                Flash Sale
+              </div>
+              <!-- <i class="iconfont icon-huanyipi"></i> -->
+            </div>
+            <div class="seckill-content">
+                  <a href="" class="tip">
+                    <h5>Till The End!</h5>
+                    <i class="iconfont icon-shandian"></i>
+                    <div class="downcount">
+                      <span id="t_h" class="time"></span>
+                      <span class="token">:</span>
+                      <span id="t_m" class="time"></span>
+                      <span class="token">:</span>
+                      <span id="t_s" class="time"></span>
+                    </div>
+                  </a>
+
+                  <a href="" class="books-sec">
+                    <img src="./static/uploads/TheSummerITurnedPretty.jpg" alt="">
+                    <p>The Summer I Turned Pretty</p>
+                    <div>
+                      <span class="cur-price">￡10.66</span>
+                      <span class="pre-price">￡11.99</span>
+                    </div>
+                    <button>Add to Cart</button>
+                  </a>
+                  <a href="" class="books-sec">
+                    <img src="./static/uploads/ItEndsWithUs.jpg" alt="">
+                    <p>It Ends With Us</p>
+                    <div>
+                      <span class="cur-price">￡7.87</span>
+                      <span class="pre-price">￡8.99</span>
+                    </div>
+                    <button>Add to Cart</button>
+                  </a>
+                  <a href="" class="books-sec">
+                    <img src="./static/uploads/HeartstopperVolume3.jpg" alt="">
+                    <p>Heartstopper Volume 3</p>
+                    <div>
+                      <span class="cur-price">￡8.34</span>
+                      <span class="pre-price">￡10.99</span>
+                    </div>
+                    <button>Add to Cart</button>
+                  </a>
+                  <a href="" class="books-sec">
+                    <img src="./static/uploads/AtomicHabits.jpg" alt="">
+                    <p>Atomic Habits</p>
+                    <div>
+                      <span class="cur-price">￡13.85</span>
+                      <span class="pre-price">￡16.99</span>
+                    </div>
+                    <button>Add to Cart</button>
+                  </a>
+              </ul>
+            </div>
+            <div class="list-content" id="history_book_div"><!--Display 10 random books 随机的书籍列表展示-->
+              <div th:text="${session.currUser.getUname()} + ' viewing history'"></div>
+              <div class="list-item" v-for="book in historyBookList">
+                <a :href="'comment.do?operate=getComment&bookId='+book.id" @click="updateHistory(book.id)">
+                  <p>
+                    <img v-bind:src="'static/uploads/'+book.bookImg" alt="" />
+                  </p>
+                  <p>Name:{{book.bookName}}</p>
+                  <p>Author:{{book.author}}</p>
+                </a>
+
+                <!--                <p><button th:if="${session.currUser==null}" th:onclick="backLogin()">Add to Cart</button></p>-->
+                <!--                <p><button th:unless="${session.currUser==null}" th:onclick="|addCart(*{id})|">Add to Cart</button></p>-->
+              </div>
+          </div>
+        </div>
+      </div>
+      <div class="bottom">
+        <div class="w">
+          <div class="top">
+            <ul>
+              <li>
+                <a href="">
+                  <img src="./static/img/bottom1.png" alt="">
+                  <span>About US</span>
+                </a>
+              </li>
+              <li>
+                <a href="">
+                  <img src="./static/img/bottom.png" alt="">
+                  <span>Sitemap</span>
+                </a>
+              </li>
+              <li>
+                <a href="">
+                  <img src="./static/img/bottom2.png" alt="">
+                  <span>Bookmarks</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div class="content">
+            <dl>
+              <dt>Facebook</dt>
+              <dd>Follow us</dd>
+            </dl>
+            <dl>
+              <dt>Twitter</dt>
+              <dd>Follow us</dd>
+            </dl>
+            <dl>
+              <dt>Pinterest</dt>
+              <dd>Follow us</dd>
+            </dl>
+            <dl>
+              <dt>instagram</dt>
+              <dd>Follow us<dd>
+            </dl>
+          </div>
+        </div>
+        <div class="down">
+          Developed by Yuqi
+        </div>
+      </div>
+     
+
+    </div>
+    <script src="./static/script/swiper.min.js"></script>
+    <script>
+      var swiper = new Swiper('.swiper-container', {
+        autoplay: true,
+        pagination: {
+          el: '.swiper-pagination',
+          dynamicBullets: true
+        },
+        navigation: {
+          nextEl: '.swiper-button-next',
+          prevEl: '.swiper-button-prev'
+        }
+      })
+    </script>
+  </body>
+</html>
