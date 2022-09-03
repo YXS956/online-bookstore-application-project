@@ -1,0 +1,37 @@
+body{
+    background-color: #e8fff2;
+}
+#frame{
+
+}
+#div1{
+    box-shadow: 1px 1px 5px #888484;
+    margin-left: 150px;
+    margin-right: 150px;
+    padding-left: 0;
+    padding-right: 0;
+    background-color: #ffffff;
+}
+#list_table{
+    border: 0;
+}
+#list_table2{
+    border: 0;
+    child-align: top;
+}
+#div_book_detail{
+    text-align: left;
+}
+.div_discount{
+    color: #666;
+    text-decoration: line-through;
+    font-size: 12px;
+}
+.div_curPrice{
+    color: red;
+    font-size: 18px;
+}
+.div_Price{
+    color: red;
+    font-size: 18px;
+}

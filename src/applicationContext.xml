@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!DOCTYPE beans [
+    <!ELEMENT beans (bean*)>
+    <!ELEMENT bean (property*)>
+    <!ELEMENT property (#PCDATA)>
+
+    <!ATTLIST bean id ID #REQUIRED>
+    <!ATTLIST bean class CDATA #IMPLIED>
+    <!ATTLIST property name CDATA #IMPLIED>
+    <!ATTLIST property ref IDREF #IMPLIED>
+]>
+
+<beans>
+    <bean id="page" class="bookStore.mybatis.myspringmvc.PageController"/>
+
+    <!-- DAO -->
+    <bean id="userDAO" class="bookStore.book.dao.impl.UserDAOImpl"/>
+    <bean id="bookDAO" class="bookStore.book.dao.impl.BookDAOImpl"/>
+    <bean id="cartItemDAO" class="bookStore.book.dao.impl.CartItemDAOImpl"/>
+    <bean id="orderDAO" class="bookStore.book.dao.impl.OrderDAOImpl"/>
+    <bean id="orderItemDAO" class="bookStore.book.dao.impl.OrderItemDAOImpl"/>
+    <bean id="commentDAO" class="bookStore.book.dao.impl.CommentDAOImpl"/>
+
+    <!-- service -->
+    <bean id="userService" class="bookStore.book.service.impl.UserServiceImpl">
+        <property name="userDAO" ref="userDAO"/>
+    </bean>
+    <bean id="bookService" class="bookStore.book.service.impl.BookServiceImpl">
+        <property name="bookDAO" ref="bookDAO"/>
+    </bean>
+    <bean id="commentService" class="bookStore.book.service.impl.CommentServiceImpl">
+        <property name="CommentDAO" ref="commentDAO"/>
+    </bean>
+    <bean id="cartItemService" class="bookStore.book.service.impl.CartItemServiceImpl">
+        <property name="cartItemDAO" ref="cartItemDAO"/>
+        <property name="bookService" ref="bookService"/>
+    </bean>
+    <bean id="orderService" class="bookStore.book.service.impl.OrderServiceImpl">
+        <property name="orderDAO" ref="orderDAO"/>
+        <property name="orderItemDAO" ref="orderItemDAO"/>
+        <property name="cartItemService" ref="cartItemService"/>
+        <property name="bookService" ref="bookService"/>
+    </bean>
+
+    <!-- controller -->
+    <bean id="user" class="bookStore.book.controller.UserController">
+        <property name="userService" ref="userService"/>
+        <property name="cartItemService" ref="cartItemService"/>
+        <property name="userController" ref="user"/>
+    </bean>
+    <bean id="book" class="bookStore.book.controller.BookController">
+        <property name="bookService" ref="bookService"/>
+        <property name="bookController" ref="book"/>
+    </bean>
+    <bean id="comment" class="bookStore.book.controller.CommentController">
+        <property name="commentService" ref="commentService"/>
+        <property name="bookService" ref="bookService"/>
+    </bean>
+    <bean id="cart" class="bookStore.book.controller.CartController">
+        <property name="cartItemService" ref="cartItemService"/>
+    </bean>
+    <bean id="order" class="bookStore.book.controller.OrderController">
+        <property name="orderService" ref="orderService"/>
+    </bean>
+
+
+</beans>
